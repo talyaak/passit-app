@@ -1,0 +1,27 @@
+{
+	"name": "server",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start": "nodemon ./src/server.ts",
+        "client": "cd ../client && npm start",
+        "start:react": "concurrently \"npm start\" \"npm run client\"",
+		"start:prod": "npm run build && nodemon ./dist/src/server.js",
+		"build": "npx tsc"
+	},
+	"keywords": [],
+	"author": "Tal <tal.jacobov@gmail.com>",
+	"license": "ISC",
+	"devDependencies": {
+		"@types/express": "4.17.13",
+		"@types/node": "18.7.14",
+		"nodemon": "2.0.19",
+		"ts-node": "10.9.1",
+		"typescript": "4.8.2"
+	},
+	"dependencies": {
+		"concurrently": "7.3.0",
+		"express": "4.18.1"
+	}
+}
