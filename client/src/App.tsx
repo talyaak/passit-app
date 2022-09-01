@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "./App.scss";
-import { Navbar } from "./Componenets/Navbar";
+import { Navbar } from "./Components/Navbar";
+import { Sidebar } from "./Components/Sidebar";
+import { Feed } from "./Components/Feed";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import { Box, Stack } from "@mui/system";
+import { Rightbar } from "./Components/Rightbar";
 
 interface serverResponse {
 	express: string;
@@ -25,18 +29,31 @@ function App() {
 	});
 
 	return (
-        <div className="App">
-            <Navbar />
-			<header className="App-header">
-				<Typography variant="h1" component="h1">Hello PassIt!</Typography>
-				{/* <p></p> */}
+		<Box>
+			<Navbar />
+			<Stack direction="row" spacing={2} justifyContent="space-between">
+				<Sidebar />
+				<Feed />
+				<Rightbar />
+			</Stack>
+
+			{/* <header className="App-header">
+				<Typography variant="h1" component="h1">
+					Hello PassIt!
+				</Typography>
+
+
 				<h2>Message from server:</h2>
-                <Typography variant="h4" component="h4">{myData}</Typography>
+
+				<Typography variant="h4" component="h4">
+					{myData}
+				</Typography>
+
 				<Button variant="contained" href="https://reactjs.org" target="_blank">
 					Starting the app
 				</Button>
-			</header>
-		</div>
+			</header> */}
+		</Box>
 	);
 }
 
