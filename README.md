@@ -12,4 +12,14 @@ that you want to pass forward to individuals who would benefit from it but can't
 
 Written with TypeScript, PassIt utilizes front-end with React and back-end with Express, MongoDB & NodeJS, 
 
+## Execute locally
+
+1. Open terminal on server directory
+2. Use `start:react` npm command (simultaneously executes react & server)
+
+```
+cd server
+npm run start:react
+```
+
 ### Further information will be published in this README file

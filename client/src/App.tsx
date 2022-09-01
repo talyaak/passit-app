@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./App.scss";
+import { Navbar } from "./Componenets/Navbar";
 import axios from "axios";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 
 interface serverResponse {
 	express: string;
@@ -22,19 +25,16 @@ function App() {
 	});
 
 	return (
-		<div className="App">
+        <div className="App">
+            <Navbar />
 			<header className="App-header">
-				<p>Hello PassIt!</p>
+				<Typography variant="h1" component="h1">Hello PassIt!</Typography>
+				{/* <p></p> */}
 				<h2>Message from server:</h2>
-				<p>{myData}</p>
-				<a
-					className="App-link"
-					href="https://reactjs.org"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
+                <Typography variant="h4" component="h4">{myData}</Typography>
+				<Button variant="contained" href="https://reactjs.org" target="_blank">
 					Starting the app
-				</a>
+				</Button>
 			</header>
 		</div>
 	);
