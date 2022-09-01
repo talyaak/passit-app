@@ -19,7 +19,8 @@ function App() {
 	useEffect(() => {
 		const fetchData = async () => {
 			await axios.get<serverResponse>("/express_backend").then((result) => {
-				setMyData(result.data.express);
+				console.log(result);
+                setMyData(result.data.express);
 			});
 		};
 
@@ -34,7 +35,7 @@ function App() {
 			<Stack direction="row" spacing={2} justifyContent="space-between">
 				<Sidebar />
 				<Feed />
-				<Rightbar />
+				<Rightbar data={myData}/>
 			</Stack>
 
 			{/* <header className="App-header">
