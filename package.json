@@ -1,0 +1,26 @@
+{
+	"name": "passit-app",
+	"version": "1.0.0",
+	"description": "<img src=\"https://repository-images.githubusercontent.com/531040566/6b6f74f8-3a95-47ac-b138-cf4e79326262\"  width=\"300\">",
+	"main": "",
+	"scripts": {
+        "start": "cd server && npm run start:react",
+        "i-client": "cd client && npm i && cd ..",
+        "i-server": "cd server && npm i",
+		"install-packages": "concurrently \"npm run i-client\" \"npm run i-server\""
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/talyaak/passit-app.git"
+	},
+	"keywords": [],
+	"author": "Tal <tal.jacobov@gmail.com>",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/talyaak/passit-app/issues"
+	},
+	"homepage": "https://github.com/talyaak/passit-app#readme",
+	"dependencies": {
+		"concurrently": "7.3.0"
+	}
+}

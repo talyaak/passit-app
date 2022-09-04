@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from "react";
-import "./App.scss";
-import { Navbar } from "./Components/Navbar";
-import { Sidebar } from "./Components/Sidebar";
-import { Feed } from "./Components/Feed";
 import axios from "axios";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import { Box, Stack } from "@mui/system";
-import { Rightbar } from "./Components/Rightbar";
+import { useState, useEffect } from "react";
+import { Route, Routes } from "react-router-dom";
+import { Feed } from "./Components/Pages/Feed";
+import "./App.scss";
+import { Home } from "./Components/Home";
+import { Login, SignUp } from "./Components/Pages";
 
 interface serverResponse {
 	express: string;
@@ -16,45 +13,46 @@ interface serverResponse {
 function App() {
 	const [myData, setMyData] = useState("");
 
+	// on-load data fetching
+	// TODO: Implement fetching from DB via server
 	useEffect(() => {
 		const fetchData = async () => {
 			await axios.get<serverResponse>("/express_backend").then((result) => {
 				console.log(result);
-                setMyData(result.data.express);
+				setMyData(result.data.express);
 			});
 		};
 
 		fetchData();
-
+		// TODO: Implement cleanup function
 		return () => {};
 	});
 
 	return (
-		<Box>
-			<Navbar />
-			<Stack direction="row" spacing={2} justifyContent="space-between">
-				<Sidebar />
-				<Feed />
-				<Rightbar data={myData}/>
-			</Stack>
+		<>
 
-			{/* <header className="App-header">
-				<Typography variant="h1" component="h1">
-					Hello PassIt!
-				</Typography>
+			<Routes>
+				<Route path="/" element={<Home data={myData} />}>
+					<Route index element={<Feed />} />
 
+					<Route path="login" element={<Login />} />
 
-				<h2>Message from server:</h2>
+					<Route path="signup" element={<SignUp />} />
 
-				<Typography variant="h4" component="h4">
-					{myData}
-				</Typography>
+					{/* TODO: Implement 'My Posts' component */}
+					<Route path="profile/posts" element={<Feed />} />
 
-				<Button variant="contained" href="https://reactjs.org" target="_blank">
-					Starting the app
-				</Button>
-			</header> */}
-		</Box>
+					{/* TODO: Implement 'Liked' component */}
+					<Route path="profile/liked" element={<Feed />} />
+
+					{/* TODO: Implement 'Profile' component */}
+					<Route path="profile" element={<Feed />} />
+
+					{/* TODO: Implement 'Settings' component */}
+					<Route path="settings" element={<Feed />} />
+				</Route>
+			</Routes>
+		</>
 	);
 }
 

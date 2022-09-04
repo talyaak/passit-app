@@ -1,16 +1,18 @@
 import { Box, Stack, Skeleton } from "@mui/material";
-import React, { useState } from "react";
-import { Post } from "./Post";
+import { useState } from "react";
+import { Post } from "../Common/Post";
 
 export const Feed = () => {
 	const [loading, setLoading] = useState(true);
 
+    // TODO: Implement data fetching from DB via server
+    // TODO: Integrate "loading" UI whilst data fetching
 	setTimeout(() => {
 		setLoading(false);
 	}, 3000);
 
 	return (
-		<Box flex={4} p={{ xs: 0, md: 2 }}>
+		<>
 			{loading ? (
 				<Stack spacing={1}>
 					<Skeleton variant="text" height={100} />
@@ -28,6 +30,6 @@ export const Feed = () => {
 					<Post />
 				</Box>
 			)}
-		</Box>
+		</>
 	);
 };
