@@ -8,9 +8,9 @@ async function initUsers() {
     await client.query(
         `CREATE TABLE IF NOT EXISTS users(
             user_id SERIAL PRIMARY KEY,
-            email TEXT NOT NULL,
             first_name TEXT NOT NULL,
             last_name TEXT NOT NULL,
+            email TEXT NOT NULL,
             password TEXT NOT NULL,
             is_admin BOOLEAN NOT NULL
         );`)

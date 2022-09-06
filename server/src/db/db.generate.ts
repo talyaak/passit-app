@@ -1,6 +1,6 @@
 import { userModel } from "../models/user.model";
 import { client } from "./db.client";
-import bcrypt from "bcrypt";
+import { generateCrypt } from "../services/generateCrypt";
 
 // Function for user row generation in db
 async function generateUsers() {
@@ -9,64 +9,57 @@ async function generateUsers() {
 	const users: userModel[] = [
 		// user 1
 		{
-			firstName: "John",
-			lastName: "Doe",
+			first_name: "John",
+			last_name: "Doe",
 			email: "johndoe@gmail.com",
 			password: "abcdefg123",
-			isAdmin: false,
+			is_admin: false,
 		},
 		// user 2
 		{
-			firstName: "Jane",
-			lastName: "Doe",
+			first_name: "Jane",
+			last_name: "Doe",
 			email: "janedoe@gmail.com",
 			password: "123456",
-			isAdmin: false,
+			is_admin: false,
 		},
 		// user 3
 		{
-			firstName: "Jim",
-			lastName: "Beam",
+			first_name: "Jim",
+			last_name: "Beam",
 			email: "jimbeam@gmail.com",
 			password: "abcdefg123",
-			isAdmin: true,
+			is_admin: true,
 		},
 	];
 
 	for (let user of users) {
-		const firstName = user.firstName;
-		const lastName = user.lastName;
+		const first_name = user.first_name;
+		const last_name = user.last_name;
 		const email = user.email;
 		const password = user.password.toString();
-		const isAdmin = user.isAdmin;
+		const is_admin = user.is_admin;
 
         // Hashed passwords using bcrypt
 		await generateCrypt(password)
 			.then((hashedPassword) => {
 				let query = 
                 `INSERT INTO users(
-                email, first_name, last_name, password, is_admin
+                first_name, last_name, email, password, is_admin
                 ) VALUES (
-                '${firstName}', '${lastName}', '${email}', '${hashedPassword}', ${isAdmin});`;
+                '${first_name}', '${last_name}', '${email}', '${hashedPassword}', ${is_admin});`;
 				return query;
 			})
 			.then(async (query) => {
 				await client.query(query).then(
 					(result) => {
-						console.log(`User '${user.firstName}' insert success`);
+						console.log(`User '${user.first_name}' insert success`);
 					},
 					(error) =>
-						console.log(`User '${user.firstName} insert fail'\n${error}`)
+						console.log(`User '${user.first_name} insert fail'\n${error}`)
 				);
 			});
 	}
-}
-
-// Generates a hashed password + salt
-async function generateCrypt(password: string) {
-	const salt = await bcrypt.genSalt();
-	const hashedPassword = await bcrypt.hash(password.toString(), salt);
-	return hashedPassword;
 }
 
 // Generate users

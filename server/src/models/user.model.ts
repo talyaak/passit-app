@@ -1,8 +1,9 @@
 // user model/interface
 export interface userModel {
-    firstName: String,
-    lastName: String,
+    user_id?: number,
+    first_name: String,
+    last_name: String,
     email: String,
     password: String,
-    isAdmin: Boolean
+    is_admin: Boolean
 }

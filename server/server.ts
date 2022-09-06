@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 	res.json({ message: "Welcome to passit." });
 });
 
-routes.get('/',usersRouter)
+routes.get('/',usersRouter);
 
 app.get("/express_backend", (req, res) => {
 	//Line 9
