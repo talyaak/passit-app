@@ -2,4 +2,7 @@
 server/node_modules
 client/src/keys.ts
 server/dist/*
+/deploy
 
+server/key.ts
+server/.env
