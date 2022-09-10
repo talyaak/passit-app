@@ -1,6 +1,6 @@
 import { userModel } from "../models/user.model";
 import { client } from "./db.client";
-import { generateCrypt } from "../services/generateCrypt";
+import { generateCrypt } from "../services/helpers/generateCrypt";
 
 // Function for user row generation in db
 async function generateUsers() {

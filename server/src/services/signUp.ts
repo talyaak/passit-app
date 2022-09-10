@@ -1,41 +1,7 @@
-import { QueryResult } from "pg";
-import { generateCrypt } from "./generateCrypt";
+import { generateCrypt } from "./helpers/generateCrypt";
+import { checkEmail } from "./helpers/checkEmail";
 import { client } from "../db/db.client";
 import { userModel } from "../models/user.model";
-
-/**
- * 
- * @param email email address input, to be checked in db.
- * @returns a promise resolving true/false based on email existence in db.
- */
-export const checkEmail = (email: String) => {
-	return new Promise<boolean>(async (resolve, reject) => {
-		console.log("start email checking query");
-
-		const query = {
-			text: `SELECT email FROM users WHERE email=$1;`,
-			values: [email],
-		};
-
-		// If query result is empty => true
-		let emailIsAvailable = false;
-
-		await client
-        .query(query)
-        .then((res) => {
-			if (res.rows.length === 0) emailIsAvailable = true;
-
-			console.log(res.rows);
-			console.log(`finished query\nemail is available: ${emailIsAvailable}`);
-			resolve(emailIsAvailable);
-		})
-		.catch((e) => {
-			console.log("ERROR");
-			console.error(e.stack);
-			reject(e);
-		});
-	});
-};
 
 /**
  * 
@@ -49,7 +15,7 @@ export const signUp = (user: userModel) => {
 	return new Promise(async (resolve, reject) => {
 		console.log("start sign-up, referring to email check");
         
-		await checkEmail(user.email)
+		await checkEmail(client, user.email)
         .then(async (emailIsAvailable) => {
 			console.log(
 				`finished email check result=${emailIsAvailable}\ncontinue signup`

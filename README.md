@@ -10,7 +10,7 @@ that you want to pass forward to individuals who would benefit from it but can't
 
 ## Technologies
 
-Written with TypeScript, PassIt utilizes front-end with React and back-end with Express, MongoDB & NodeJS, 
+Written with TypeScript, PassIt utilizes front-end with React and back-end with Express, PostgreSQL & NodeJS.
 
 ## Execute locally
 
