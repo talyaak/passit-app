@@ -40,33 +40,27 @@ async function generateUsers() {
 		const password = user.password.toString();
 		const is_admin = user.is_admin;
 
-        // Hashed passwords using bcrypt
-		await generateCrypt(password)
-			.then((hashedPassword) => {
-				let query = 
-                `INSERT INTO users(
+		// Hashed passwords using bcrypt
+
+		const hashedPassword = await generateCrypt(password);
+		let query = `INSERT INTO users(
                 first_name, last_name, email, password, is_admin
                 ) VALUES (
                 '${first_name}', '${last_name}', '${email}', '${hashedPassword}', ${is_admin});`;
-				return query;
-			})
-			.then(async (query) => {
-				await client.query(query).then(
-					(result) => {
-						console.log(`User '${user.first_name}' insert success`);
-					},
-					(error) =>
-						console.log(`User '${user.first_name} insert fail'\n${error}`)
-				);
-			});
+
+		try {
+			await client.query(query);
+			console.log(`User '${user.first_name}' insert success`);
+		} catch (error) {
+			console.log(`User '${user.first_name} insert fail'\n${error}`);
+		}
 	}
 }
 
 // Generate users
 async function main() {
-	await generateUsers().then((result) => {
-		client.end();
-	});
+	await generateUsers();
+	client.end();
 }
 
 main();

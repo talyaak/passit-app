@@ -6,12 +6,11 @@ export const Profile = () => {
 
 	useEffect(() => {
 		const fetchData = async () => {
-			await axios
-				.get<any>("/users/myposts", { withCredentials: true })
-				.then((result) => {
-					setData(result.data.userInfo);
-					console.log(result.data);
-				});
+			const result = await axios.get<any>("/users/myposts", {
+				withCredentials: true,
+			});
+			setData(result.data.userInfo);
+			console.log(result.data);
 		};
 
 		fetchData();
@@ -23,13 +22,13 @@ export const Profile = () => {
 		<>
 			{data ? (
 				<>
-                    <h1>Profile Page</h1>
+					<h1>Profile Page</h1>
 					<br />
-                    <h2>User details:</h2>
+					<h2>User details:</h2>
 					<br />
 					<div>email: {data.email}</div>
-                    <div>name: {`${data["first_name"]} ${data["last_name"]}`}</div>
-                    <div>user id: {data["user_id"]}</div>
+					<div>name: {`${data["first_name"]} ${data["last_name"]}`}</div>
+					<div>user id: {data["user_id"]}</div>
 				</>
 			) : (
 				<>Loading</>

@@ -1,11 +1,11 @@
 import { Client } from "pg";
 
 /**
- * 
+ *
  * @param email email address input, to be checked in db.
  * @returns a promise resolving true/false based on email existence in db.
  */
-export const checkEmail = (client: Client ,email: String) => {
+export const checkEmail = (client: Client, email: String) => {
 	return new Promise<boolean>(async (resolve, reject) => {
 		console.log("start email checking query");
 
@@ -14,22 +14,18 @@ export const checkEmail = (client: Client ,email: String) => {
 			values: [email],
 		};
 
-		// If query result is empty => true
-		let emailIsAvailable = false;
-
-		await client
-        .query(query)
-        .then((res) => {
-			if (res.rows.length === 0) emailIsAvailable = true;
-
-			console.log(res.rows);
+		try {
+			const result = await client.query(query);
+			let emailIsAvailable = result.rows.length === 0;// If query result is empty => true
+			
+            console.log(result.rows);
 			console.log(`finished query\nemail is available: ${emailIsAvailable}`);
-			resolve(emailIsAvailable);
-		})
-		.catch((e) => {
+			
+            resolve(emailIsAvailable);
+		} catch (error) {
 			console.log("ERROR");
-			console.error(e.stack);
-			reject(e);
-		});
+			console.error(error);
+			reject(error);
+		}
 	});
 };

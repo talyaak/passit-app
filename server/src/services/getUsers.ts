@@ -51,13 +51,9 @@ export const getUserByEmail = (email: String) => {
 			values: [email]
 		};
 
-		await client
-        .query(query)
-        .then((res) => {
-            console.log(res.rows);
-
-            // No results
-			if (res.rows.length === 0) {
+        try {
+            const result = await client.query(query);
+            if(result.rows.length === 0) { // No results
                 console.log("User not found in e-mail check");
                 reject(new Error("Invalid email or password"));
                 return;
@@ -65,12 +61,13 @@ export const getUserByEmail = (email: String) => {
 
             // Query completed, resolve result
 			console.log(`finished query\nemail is available`);
-			resolve(res.rows[0]);
-		})
-		.catch((e) => {
-			console.log("ERROR");
-			console.error(e.stack);
-			reject(e);
-		});
+			resolve(result.rows[0]);
+
+        } catch (error) {
+            console.log("ERROR");
+			console.error(error);
+			reject(error);
+        }
+
 	});
 };

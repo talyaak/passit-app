@@ -15,7 +15,7 @@ export function authenticateToken(
 	// If authHeader !== undefined =>  return 'TOKEN' from authHeader(='Bearer TOKEN')
 	// const token = authHeader && authHeader.split(" ")[1];
 
-    const token = req.cookies['jwt-token'];
+    const token = req.cookies['jwt-token']; // Using httpOnly cookie
 	if (token === null) return res.send(401).json({ message: "Unauthorized" });
 
 	try {

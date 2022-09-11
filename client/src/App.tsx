@@ -18,7 +18,7 @@ function App() {
 	// TODO: Implement fetching from DB via server
 	useEffect(() => {
 		const fetchData = async () => {
-			await axios.get<serverResponse>("/express_backend").then((result) => {
+			axios.get<serverResponse>("/express_backend").then((result) => {
 				// console.log(result);
 				setMyData(result.data.express);
 			});

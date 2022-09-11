@@ -6,6 +6,7 @@ import { getUserByEmail, getUserById, getUsers } from "../services/getUsers";
 import { userModel } from "../models/user.model";
 import jwt from "jsonwebtoken";
 import { authenticateToken } from "../middleware/authenticateToken";
+import { getErrorMessage } from "../services/helpers/getErrorMessage"
 
 // Global Express.Request declaration for middleware use
 declare global {
@@ -22,13 +23,13 @@ const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET!;
 
 // Get all users
 usersRouter.get("/", async (req: Request, res: Response) => {
-	await getUsers().then(
+	getUsers().then(
 		(users) => res.status(200).json(users),
 		(error) => res.status(404).send(error)
 	);
 });
 
-// Get user posts (uses jwt authentication middleware)
+// Get hardcoded user posts (uses jwt authentication middleware)
 usersRouter.get(
 	"/myposts",
 	authenticateToken,
@@ -46,52 +47,56 @@ usersRouter.get(
 // Get user (by user_id) posts
 usersRouter.get("/:id", async (req: Request, res: Response) => {
 	const userId = req.params.id;
-	await getUserById(userId).then(
-		(users) => {
-			if (users /*<--not void*/ && users.length === 0) {
-				res.status(404).send("User not found");
-			}
-			res.status(200).json(users![0]);
-		},
-		(error) => res.status(500).send(error)
-	);
+
+	try {
+		const users = await getUserById(userId);
+		if (users && users.length === 0) {
+			res.status(404).send("User not found");
+		}
+		res.status(200).json(users![0]);
+	} catch (error) {
+		res.status(500).send(error);
+	}
 });
 
 /**
  * Logs out of system using httpOnly cookie deletion
- * 
+ *
  * Delete is available only after authentication
  */
-usersRouter.post("/logout", authenticateToken, (req: Request, res: Response) => {
-    try {
-        res.cookie("jwt-token", "");
-        res.send(200).json({ message: "Log out successful "});
-    } catch(error) {
-        console.log(error);
-        res.status(403).send(error);
-    }
-})
+usersRouter.post(
+	"/logout",
+	authenticateToken,
+	(req: Request, res: Response) => {
+		try {
+			res.cookie("jwt-token", "");
+			res.send(200).json({ message: "Log out successful " });
+		} catch (error) {
+			console.log(error);
+			res.status(403).send(error);
+		}
+	}
+);
 
-// Post sign-up request
+// sign-up request
 usersRouter.post("/signup", async (req: Request, res: Response) => {
 	console.log("start signup");
 	const user: userModel = req.body;
-	await signUp(user).then(
-		(result) => {
-			console.log("finished signup");
-			res.status(200).send(result);
-		},
-		(error) => {
-			console.log("signup failed");
-			console.log(error);
-			res.status(502).send(error);
-		}
-	);
+
+	try {
+		const result = await signUp(user);
+		console.log("finished signup");
+		res.status(200).send(result);
+	} catch (error) {
+		console.log("signup failed");
+		console.log(error);
+		res.status(502).send(error);
+	}
 });
 
 /**
  * Login request
- * 
+ *
  * email test => password test => create token => send httpOnly cookie
  */
 usersRouter.post("/login", async (req: Request, res: Response) => {
@@ -102,39 +107,34 @@ usersRouter.post("/login", async (req: Request, res: Response) => {
 		password: password,
 	});
 
-	// Authenticate user with bcrypt
-	await getUserByEmail(email).then(
-		async (user: userModel) => {
-			// User not found scenario
-			if (!user)
-				res.status(403).json({ message: "Invalid !email! or password" });
+	try {
+		const user = await getUserByEmail(email);
+        // Invalid email scenario
+		if (!user) res.status(403).json({ message: "Invalid email or password" });
 
-			// Invalid password scenario
-			const valid = await compare(password, user.password.toString());
-			if (!valid)
-				res.status(403).json({ message: "Invalid email or !password!" });
+		// Invalid password scenario
+		const valid = await compare(password, user.password.toString());
+		if (!valid)
+			res.status(403).json({ message: "Invalid email or password!" });
 
-			const accessToken = jwt.sign(user, ACCESS_TOKEN_SECRET, {
-				expiresIn: "7d",
-			});
+		const accessToken = jwt.sign(user, ACCESS_TOKEN_SECRET, {
+			expiresIn: "7d",
+		});
 
-			// TODO: Scale up JWT with refreshToken
-			// const refreshToken = jwt.sign(user, ACCESS_TOKEN_SECRET, {
-			// 	expiresIn: "7d",
-			// });
+		res.cookie("jwt-token", accessToken, {
+			path: "/",
+			httpOnly: true,
+			// TODO: Implement HTTPS & SameSite for XSS & XSRF immunity
+			// secure: true,
+			// sameSite: 'strict'
+		});
+		res.status(200).json({ message: "Successful login" });
+		// res.status(200).json({ accessToken: accessToken });
+	} 
+    catch (error) {
+		res.status(404).json({ message: getErrorMessage(error) });
+	}
 
-			res.cookie("jwt-token", accessToken, {
-                path: "/",
-                httpOnly: true,
-                // TODO: Implement HTTPS & SameSite for XSS & XSRF immunity
-                // secure: true,
-                // sameSite: 'strict'
-            });
-            res.status(200).json({ message: 'Successful login' });
-			// res.status(200).json({ accessToken: accessToken });
-		},
-		(error) => res.status(404).json({ message: error.message })
-	);
 });
 
 export default usersRouter;

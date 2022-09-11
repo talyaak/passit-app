@@ -35,7 +35,7 @@ export function Login() {
 			password: password,
 		};
 		console.log(user);
-		await axios.post("/users/login", user).then(
+		axios.post("/users/login", user).then(
 			(result) => { // Success
 				console.log(result);
                 navigate("/profile");
