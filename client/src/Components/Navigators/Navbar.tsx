@@ -13,8 +13,9 @@ import {
 	styled,
 	InputBase,
 } from "@mui/material";
+import { AuthContext } from "../../App";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 
 // Breakpoint styling for responsiveness
@@ -34,7 +35,7 @@ const Search = styled("div")(({ theme }) => ({
 }));
 
 export const Navbar = () => {
-	const [userAuth, setUserAuth] = useState(false);
+	const { auth, setAuth } = useContext(AuthContext);
 
 	return (
 		<AppBar
@@ -67,12 +68,7 @@ export const Navbar = () => {
 					<Search sx={{}}>
 						<InputBase placeholder="search..." />
 					</Search>
-					<IconButton
-						color="inherit"
-						onClick={() => {
-							setUserAuth(!userAuth);
-						}}
-					>
+					<IconButton color="inherit">
 						{/* '+' button will emulate userAuth for UI testing */}
 						<AddBox />
 					</IconButton>
@@ -87,7 +83,22 @@ export const Navbar = () => {
 					<Button color="inherit">Browse</Button>
 
 					{/* Render login/sign-up button based on user authentication */}
-					{userAuth ? (
+					{auth ? (
+						<Button
+							component={Link}
+							to="/"
+							color="inherit"
+							sx={breakpointStyle}
+							onClick={() => {
+								axios
+									.post("/users/logout")
+									.then((result) => setAuth!(false))
+									.catch((error) => alert(error));
+							}}
+						>
+							Sign Out
+						</Button>
+					) : (
 						<Button
 							component={Link}
 							to="/login"
@@ -95,20 +106,6 @@ export const Navbar = () => {
 							sx={breakpointStyle}
 						>
 							Login
-						</Button>
-					) : (
-						<Button
-							component={Link}
-							to="/users/logout"
-							color="inherit"
-							sx={breakpointStyle}
-                            onClick={()=>{
-                                axios.post("/users/logout")
-                                .then(result=>console.log(result))
-                                .catch(error=>alert(error)) 
-                            }}
-						>
-							Sign Out
 						</Button>
 					)}
 

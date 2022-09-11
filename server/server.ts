@@ -13,24 +13,17 @@ const corsOptions = {
 const app = express();
 app.use(cookieParser());
 app.use(cors(corsOptions));
-// parse requests of content-type - application/json
 app.use(bodyParser.json());
-// parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(routes);
-
-app.get("/", (req, res) => {
-	res.json({ message: "Welcome to passit." });
-});
 
 routes.get('/',usersRouter);
 
 app.get("/express_backend", (req, res) => {
-	//Line 9
-	res.send({
+	res.status(200).send({
 		express: "YOUR EXPRESS BACKEND IS CONNECTED TO REACT. GOOD FOR YOU!",
-	}); //Line 10
-}); //Line 11
+	});
+});
 
 app.listen(PORT, () => {
 	console.log(`Application started on port ${PORT}!`);

@@ -7,6 +7,7 @@ import { userModel } from "../models/user.model";
 import jwt from "jsonwebtoken";
 import { authenticateToken } from "../middleware/authenticateToken";
 import { getErrorMessage } from "../services/helpers/getErrorMessage"
+import { resolve } from "path";
 
 // Global Express.Request declaration for middleware use
 declare global {
@@ -134,7 +135,16 @@ usersRouter.post("/login", async (req: Request, res: Response) => {
     catch (error) {
 		res.status(404).json({ message: getErrorMessage(error) });
 	}
-
 });
+
+// Endpoint for react authentication of cookies, allowing "Authenticated" state
+usersRouter.post("/auth", authenticateToken, async (req: Request, res: Response) => {
+    try {
+        res.status(200).send(true);
+    } catch (error) {
+        res.status(404).send(false);
+        console.log(error);
+    }
+})
 
 export default usersRouter;

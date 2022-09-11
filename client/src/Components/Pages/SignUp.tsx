@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 
 import {
 	Avatar,
@@ -13,12 +14,16 @@ import {
 	Typography,
 	Container,
 } from "@mui/material";
-import { Link as RouteLink } from "react-router-dom";
+import { Link as RouteLink, useNavigate } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
 export const SignUp = () => {
-	const theme = createTheme();
+	const navigate = useNavigate();
+	const [email, setEmail] = useState<string>("");
+	const [password, setPassword] = useState<string>("");
+    
+    const theme = createTheme();
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -41,12 +46,15 @@ export const SignUp = () => {
 						alignItems: "center",
 					}}
 				>
+                    {/* FORM HEADER AVATAR */}
 					<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
 						<LockOutlinedIcon />
 					</Avatar>
+                    {/* FORM HEADER*/}
 					<Typography component="h1" variant="h5">
 						Sign up
 					</Typography>
+                    {/* FORM */}
 					<Box
 						component="form"
 						noValidate
@@ -54,6 +62,7 @@ export const SignUp = () => {
 						sx={{ mt: 3 }}
 					>
 						<Grid container spacing={2}>
+                            {/* FIRST NAME INPUT */}
 							<Grid item xs={12} sm={6}>
 								<TextField
 									autoComplete="given-name"
@@ -65,6 +74,7 @@ export const SignUp = () => {
 									autoFocus
 								/>
 							</Grid>
+                            {/* LAST NAME INPUT */}
 							<Grid item xs={12} sm={6}>
 								<TextField
 									required
@@ -75,6 +85,7 @@ export const SignUp = () => {
 									autoComplete="family-name"
 								/>
 							</Grid>
+                            {/* EMAIL INPUT */}
 							<Grid item xs={12}>
 								<TextField
 									required
@@ -85,6 +96,7 @@ export const SignUp = () => {
 									autoComplete="email"
 								/>
 							</Grid>
+                            {/* PASSWORD INPUT */}
 							<Grid item xs={12}>
 								<TextField
 									required
@@ -97,6 +109,7 @@ export const SignUp = () => {
 								/>
 							</Grid>
 						</Grid>
+                        {/* SUBMIT (SIGN-IN) BUTTON */}
 						<Button
 							type="submit"
 							fullWidth
@@ -105,8 +118,10 @@ export const SignUp = () => {
 						>
 							Sign Up
 						</Button>
-						<Grid container justifyContent="flex-end">
-							<Grid item>
+                        {/* FORM FOOTER */}
+						<Grid container justifyContent="center">
+							{/* SIGN IN REFERRAL */}
+                            <Grid item>
 								<Link 
                                 component={RouteLink}
                                 to="/login"
