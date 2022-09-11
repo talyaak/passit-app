@@ -1,4 +1,5 @@
 import express from "express";
+import cookieParser from "cookie-parser"
 import bodyParser from "body-parser";
 import cors from "cors";
 import usersRouter from "./src/routes/user.routes";
@@ -10,7 +11,8 @@ const corsOptions = {
 };
 
 const app = express();
-app.use(cors(/*corsOptions*/));
+app.use(cookieParser());
+app.use(cors(corsOptions));
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded

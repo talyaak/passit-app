@@ -7,6 +7,7 @@ import { userModel } from "../models/user.model";
 import jwt from "jsonwebtoken";
 import { authenticateToken } from "../middleware/authenticateToken";
 
+// Global Express.Request declaration for middleware use
 declare global {
 	namespace Express {
 		interface Request {
@@ -56,6 +57,21 @@ usersRouter.get("/:id", async (req: Request, res: Response) => {
 	);
 });
 
+/**
+ * Logs out of system using httpOnly cookie deletion
+ * 
+ * Delete is available only after authentication
+ */
+usersRouter.post("/logout", authenticateToken, (req: Request, res: Response) => {
+    try {
+        res.cookie("jwt-token", "");
+        res.send(200).json({ message: "Log out successful "});
+    } catch(error) {
+        console.log(error);
+        res.status(403).send(error);
+    }
+})
+
 // Post sign-up request
 usersRouter.post("/signup", async (req: Request, res: Response) => {
 	console.log("start signup");
@@ -73,33 +89,49 @@ usersRouter.post("/signup", async (req: Request, res: Response) => {
 	);
 });
 
+/**
+ * Login request
+ * 
+ * email test => password test => create token => send httpOnly cookie
+ */
 usersRouter.post("/login", async (req: Request, res: Response) => {
 	const email = req.body.email;
 	const password = req.body.password;
+	console.log({
+		email: email,
+		password: password,
+	});
 
 	// Authenticate user with bcrypt
 	await getUserByEmail(email).then(
 		async (user: userModel) => {
 			// User not found scenario
-			if (!user) res.status(403).json({ message: "Invalid email or password" });
+			if (!user)
+				res.status(403).json({ message: "Invalid !email! or password" });
 
 			// Invalid password scenario
 			const valid = await compare(password, user.password.toString());
 			if (!valid)
-				res.status(403).json({ message: "Invalid email or password" });
+				res.status(403).json({ message: "Invalid email or !password!" });
 
-			const accessToken = jwt.sign(
-				user,
-				ACCESS_TOKEN_SECRET /* {expiresIn: "15m",} */
-			);
+			const accessToken = jwt.sign(user, ACCESS_TOKEN_SECRET, {
+				expiresIn: "7d",
+			});
 
 			// TODO: Scale up JWT with refreshToken
 			// const refreshToken = jwt.sign(user, ACCESS_TOKEN_SECRET, {
 			// 	expiresIn: "7d",
 			// });
 
-			res.status(200).json({ accessToken: accessToken });
-			// res.cookie("AINFO", accessToken);
+			res.cookie("jwt-token", accessToken, {
+                path: "/",
+                httpOnly: true,
+                // TODO: Implement HTTPS & SameSite for XSS & XSRF immunity
+                // secure: true,
+                // sameSite: 'strict'
+            });
+            res.status(200).json({ message: 'Successful login' });
+			// res.status(200).json({ accessToken: accessToken });
 		},
 		(error) => res.status(404).json({ message: error.message })
 	);

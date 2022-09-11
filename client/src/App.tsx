@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Feed } from "./Components/Pages/Feed";
+import { Profile } from "./Components/Pages/Profile";
 import "./App.scss";
 import { Home } from "./Components/Home";
 import { Login, SignUp } from "./Components/Pages";
@@ -18,7 +19,7 @@ function App() {
 	useEffect(() => {
 		const fetchData = async () => {
 			await axios.get<serverResponse>("/express_backend").then((result) => {
-				console.log(result);
+				// console.log(result);
 				setMyData(result.data.express);
 			});
 		};
@@ -46,10 +47,12 @@ function App() {
 					<Route path="profile/liked" element={<Feed />} />
 
 					{/* TODO: Implement 'Profile' component */}
-					<Route path="profile" element={<Feed />} />
+					<Route path="profile" element={<Profile />} />
 
 					{/* TODO: Implement 'Settings' component */}
 					<Route path="settings" element={<Feed />} />
+
+                    <Route path="*" element={<div>Page not found</div>} />
 				</Route>
 			</Routes>
 		</>

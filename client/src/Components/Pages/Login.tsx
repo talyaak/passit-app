@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 
 import {
 	Avatar,
@@ -10,23 +11,40 @@ import {
 	Link,
 	Grid,
 	Box,
-    Typography,
-    Container
+	Typography,
+	Container,
 } from "@mui/material";
+
+import { Link as RouteLink, useNavigate } from "react-router-dom";
 
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import axios from "axios";
 
 const theme = createTheme();
 
 export function Login() {
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+	const navigate = useNavigate();
+	const [email, setEmail] = useState<string>("");
+	const [password, setPassword] = useState<string>("");
+
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		const data = new FormData(event.currentTarget);
-		console.log({
-			email: data.get("email"),
-			password: data.get("password"),
-		});
+		const user = {
+			email: email,
+			password: password,
+		};
+		console.log(user);
+		await axios.post("/users/login", user).then(
+			(result) => { // Success
+				console.log(result);
+                navigate("/profile");
+
+			},
+			(error) => { // Error
+				alert(error.response.data.message);
+			}
+		);
 	};
 
 	return (
@@ -41,18 +59,22 @@ export function Login() {
 						alignItems: "center",
 					}}
 				>
+					{/* FORM HEADER AVATAR */}
 					<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
 						<LockOutlinedIcon />
 					</Avatar>
+					{/* FORM HEADER */}
 					<Typography component="h1" variant="h5">
-						Sign in
+						Login
 					</Typography>
+					{/* FORM */}
 					<Box
 						component="form"
 						onSubmit={handleSubmit}
 						noValidate
 						sx={{ mt: 1 }}
 					>
+						{/* EMAIL INPUT */}
 						<TextField
 							margin="normal"
 							required
@@ -62,7 +84,13 @@ export function Login() {
 							name="email"
 							autoComplete="email"
 							autoFocus
+							value={email}
+							onChange={(e) => {
+								setEmail(e.target.value);
+								console.log(email);
+							}}
 						/>
+						{/* PASSWORD INPUT */}
 						<TextField
 							margin="normal"
 							required
@@ -72,11 +100,18 @@ export function Login() {
 							type="password"
 							id="password"
 							autoComplete="current-password"
+							value={password}
+							onChange={(e) => {
+								setPassword(e.target.value);
+								console.log(password);
+							}}
 						/>
-						<FormControlLabel
+						{/* REMEMBER ME TODO: Implement "Remember me" button in login*/}
+						{/* <FormControlLabel
 							control={<Checkbox value="remember" color="primary" />}
 							label="Remember me"
-						/>
+						/> */}
+						{/* SUBMIT (SIGN-IN) BUTTON */}
 						<Button
 							type="submit"
 							fullWidth
@@ -85,14 +120,17 @@ export function Login() {
 						>
 							Sign In
 						</Button>
+						{/* FORM FOOTER */}
 						<Grid container>
+							{/* FORGOT PASSWORD? */}
 							<Grid item xs>
 								<Link href="#" variant="body2">
 									Forgot password?
 								</Link>
 							</Grid>
+							{/* SIGN UP REFERRAL */}
 							<Grid item>
-								<Link href="#" variant="body2">
+								<Link component={RouteLink} to="/signup" variant="body2">
 									{"Don't have an account? Sign Up"}
 								</Link>
 							</Grid>

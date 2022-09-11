@@ -59,7 +59,7 @@ export const getUserByEmail = (email: String) => {
             // No results
 			if (res.rows.length === 0) {
                 console.log("User not found in e-mail check");
-                reject(new Error("User not found"));
+                reject(new Error("Invalid email or password"));
                 return;
             }
 

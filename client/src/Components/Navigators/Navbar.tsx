@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import axios from "axios";
 
 // Breakpoint styling for responsiveness
 const breakpointStyle = { display: { xs: "none", sm: "block" } };
@@ -66,13 +67,14 @@ export const Navbar = () => {
 					<Search sx={{}}>
 						<InputBase placeholder="search..." />
 					</Search>
-					<IconButton color="inherit">
+					<IconButton
+						color="inherit"
+						onClick={() => {
+							setUserAuth(!userAuth);
+						}}
+					>
 						{/* '+' button will emulate userAuth for UI testing */}
-                        <AddBox 
-                        onClick={()=>{
-                            setUserAuth(!userAuth);
-                        }}
-                        />
+						<AddBox />
 					</IconButton>
 				</Stack>
 
@@ -97,11 +99,16 @@ export const Navbar = () => {
 					) : (
 						<Button
 							component={Link}
-							to="/signup"
+							to="/users/logout"
 							color="inherit"
 							sx={breakpointStyle}
+                            onClick={()=>{
+                                axios.post("/users/logout")
+                                .then(result=>console.log(result))
+                                .catch(error=>alert(error)) 
+                            }}
 						>
-							Sign Up
+							Sign Out
 						</Button>
 					)}
 
