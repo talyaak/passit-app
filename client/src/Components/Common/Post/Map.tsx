@@ -1,7 +1,7 @@
 import React from "react";
 import { GOOGLE_API_KEY } from "../../../keys";
 export const Map = () => {
-	const mapSrc = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_API_KEY}&q=32.068089,34.803589
+	const mapSrc = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_API_KEY}&q=31.6862777,34.5750802
     &zoom=18`;
 
 	return (

@@ -6,7 +6,7 @@ import { getUserByEmail, getUserById, getUsers } from "../services/getUsers";
 import { userModel } from "../models/user.model";
 import jwt from "jsonwebtoken";
 import { authenticateToken } from "../middleware/authenticateToken";
-import { getErrorMessage } from "../services/helpers/getErrorMessage"
+import { getErrorMessage } from "../services/helpers/getErrorMessage";
 import { resolve } from "path";
 
 // Global Express.Request declaration for middleware use
@@ -84,14 +84,31 @@ usersRouter.post("/signup", async (req: Request, res: Response) => {
 	console.log("start signup");
 	const user: userModel = req.body;
 
-	try {
-		const result = await signUp(user);
-		console.log("finished signup");
-		res.status(200).send(result);
-	} catch (error) {
-		console.log("signup failed");
-		console.log(error);
-		res.status(502).send(error);
+	function isEmpty(array: String[]) {
+		for (const str of array) {
+			console.log(str);
+            if (str == '') return true;
+		}
+		return false;
+	}
+    const test = isEmpty([user.first_name, user.last_name, user.email, user.password]);
+    console.log(test);
+    
+    // Invalid input
+	if (test) {
+		
+        res.status(400).json({ message: "Invalid input, try again"});
+	} 
+    else { // Valid input
+		try {
+			// const result = await signUp(user);
+			// console.log("finished signup");
+			// res.status(200).send(result);
+		} catch (error) {
+			// console.log("signup failed");
+			// console.log(error);
+			// res.status(502).send(error);
+		}
 	}
 });
 
@@ -110,13 +127,12 @@ usersRouter.post("/login", async (req: Request, res: Response) => {
 
 	try {
 		const user = await getUserByEmail(email);
-        // Invalid email scenario
+		// Invalid email scenario
 		if (!user) res.status(403).json({ message: "Invalid email or password" });
 
 		// Invalid password scenario
 		const valid = await compare(password, user.password.toString());
-		if (!valid)
-			res.status(403).json({ message: "Invalid email or password!" });
+		if (!valid) res.status(403).json({ message: "Invalid email or password!" });
 
 		const accessToken = jwt.sign(user, ACCESS_TOKEN_SECRET, {
 			expiresIn: "7d",
@@ -131,20 +147,23 @@ usersRouter.post("/login", async (req: Request, res: Response) => {
 		});
 		res.status(200).json({ message: "Successful login" });
 		// res.status(200).json({ accessToken: accessToken });
-	} 
-    catch (error) {
+	} catch (error) {
 		res.status(404).json({ message: getErrorMessage(error) });
 	}
 });
 
 // Endpoint for react authentication of cookies, allowing "Authenticated" state
-usersRouter.post("/auth", authenticateToken, async (req: Request, res: Response) => {
-    try {
-        res.status(200).send(true);
-    } catch (error) {
-        res.status(404).send(false);
-        console.log(error);
-    }
-})
+usersRouter.post(
+	"/auth",
+	authenticateToken,
+	async (req: Request, res: Response) => {
+		try {
+			res.status(200).send(true);
+		} catch (error) {
+			res.status(404).send(false);
+			console.log(error);
+		}
+	}
+);
 
 export default usersRouter;

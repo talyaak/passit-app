@@ -1,11 +1,18 @@
-import { userModel } from "../models/user.model";
+import { userModel, addressModel } from "../models/user.model";
 import { client } from "./db.client";
 import { generateCrypt } from "../services/helpers/generateCrypt";
+import axios from "axios";
 
 // Function for user row generation in db
 async function generateUsers() {
 	console.log("started users generation");
-
+	const address1: addressModel = {
+		city: "נתניה",
+		street_address: "רמז 11",
+		country: "ישראל",
+		lat: 34.8535034,
+		lng: 34.8535034,
+	};
 	const users: userModel[] = [
 		// user 1
 		{
@@ -13,6 +20,7 @@ async function generateUsers() {
 			last_name: "Doe",
 			email: "johndoe@gmail.com",
 			password: "abcdefg123",
+			address: address1,
 			is_admin: false,
 		},
 		// user 2
@@ -43,11 +51,21 @@ async function generateUsers() {
 		// Hashed passwords using bcrypt
 
 		const hashedPassword = await generateCrypt(password);
-		let query = `INSERT INTO users(
-                first_name, last_name, email, password, is_admin
-                ) VALUES (
-                '${first_name}', '${last_name}', '${email}', '${hashedPassword}', ${is_admin});`;
-
+		const query = {
+            text: `INSERT INTO users(
+                    first_name, last_name, email, address, password, is_admin
+                    ) VALUES (
+                    $1, $2, $3, $4, $5, $6);`,
+            values: [
+                first_name,
+                last_name,
+                email,
+                address1,
+                hashedPassword,
+                is_admin,
+            ],
+        };
+        
 		try {
 			await client.query(query);
 			console.log(`User '${user.first_name}' insert success`);
@@ -57,9 +75,29 @@ async function generateUsers() {
 	}
 }
 
+async function generateUsersFromAPI(numOfUsers: number) {
+	let users: userModel[] = [];
+	const apiUsers = await axios.get(
+		`https://random-data-api.com/api/v2/users?size=${numOfUsers}`
+	);
+
+	for (const apiUser of apiUsers.data) {
+		const user: userModel = {
+			first_name: apiUser.first_name,
+			last_name: apiUser.last_name,
+			email: apiUser.email,
+			password: apiUser.password,
+			is_admin: false,
+		};
+		users.push(user);
+	}
+	console.log(users);
+}
+
 // Generate users
 async function main() {
 	await generateUsers();
+	// await generateUsersFromAPI(10);
 	client.end();
 }
 

@@ -32,13 +32,13 @@ function App() {
 	useEffect(() => {
 		let mounted = true;
 		const fetchData = async () => {
-			try {
-				const serverAuth = await axios.post<boolean>("/users/auth");
+            try {
+                const result = await axios.get<serverResponse>("/express_backend");
+                if (mounted) setMyData(result.data.express);
+
+                const serverAuth = await axios.post<boolean>("/users/auth");
 				if (mounted) setAuth(serverAuth.data);
-
-				const result = await axios.get<serverResponse>("/express_backend");
-				if (mounted) setMyData(result.data.express);
-
+                
 				console.log(auth);
 			} catch (error) {
 				console.log(error);

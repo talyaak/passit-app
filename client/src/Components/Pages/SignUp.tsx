@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-
+import { userModel } from "../../models/user.model";
 import {
 	Avatar,
 	Button,
@@ -17,21 +17,36 @@ import {
 import { Link as RouteLink, useNavigate } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import axios from "axios";
 
 export const SignUp = () => {
 	const navigate = useNavigate();
+    const [firstName, setFirstName] = useState<string>("");
+    const [lastName, setLastName] = useState<string>("");
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
     
     const theme = createTheme();
 
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		const data = new FormData(event.currentTarget);
-		console.log({
-			email: data.get("email"),
-			password: data.get("password"),
-		});
+		const user: userModel = {
+            first_name: firstName,
+            last_name: lastName,
+			email: email,
+			password: password,
+            is_admin: false
+		}
+
+        axios.post("/users/signup", user).then(
+            () => { // Success 
+                alert("User created successfully!");
+                navigate("/login");
+            }, 
+            (error) => { // Error
+                alert(error.response.data.message)
+            }
+        )
 	};
 
 	return (
@@ -72,6 +87,9 @@ export const SignUp = () => {
 									id="firstName"
 									label="First Name"
 									autoFocus
+                                    onChange={(e) => {
+										setFirstName(e.target.value);
+									}}
 								/>
 							</Grid>
                             {/* LAST NAME INPUT */}
@@ -83,6 +101,9 @@ export const SignUp = () => {
 									label="Last Name"
 									name="lastName"
 									autoComplete="family-name"
+                                    onChange={(e) => {
+										setLastName(e.target.value);
+									}}
 								/>
 							</Grid>
                             {/* EMAIL INPUT */}
@@ -94,6 +115,9 @@ export const SignUp = () => {
 									label="Email Address"
 									name="email"
 									autoComplete="email"
+                                    onChange={(e) => {
+										setEmail(e.target.value);
+									}}
 								/>
 							</Grid>
                             {/* PASSWORD INPUT */}
@@ -106,6 +130,9 @@ export const SignUp = () => {
 									type="password"
 									id="password"
 									autoComplete="new-password"
+                                    onChange={(e) => {
+										setPassword(e.target.value);
+									}}
 								/>
 							</Grid>
 						</Grid>
