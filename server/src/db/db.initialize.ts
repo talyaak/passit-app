@@ -5,7 +5,7 @@ async function initDb() {
 	console.log("Start database creation");
 	try {
 		const query = `
-        CREATE TABLE "users" (
+        CREATE TABLE IF NOT EXISTS "users" (
             "user_id" SERIAL PRIMARY KEY,
             "first_name" TEXT NOT NULL,
             "last_name" TEXT NOT NULL,
@@ -15,15 +15,16 @@ async function initDb() {
             "is_admin" BOOLEAN NOT NULL
             );
             
-        CREATE TABLE "posts" (
+        CREATE TABLE IF NOT EXISTS "posts" (
             "post_id" SERIAL PRIMARY KEY,
             "user_id" INTEGER,
             "category" TEXT NOT NULL,
             "product_name" TEXT NOT NULL,
-            "description" TEXT NOT NULL
+            "description" TEXT NOT NULL,
+            "img_url" TEXT NOT NULL
         );
         
-        CREATE TABLE "likes" (
+        CREATE TABLE IF NOT EXISTS "likes" (
             "like_id" SERIAL PRIMARY KEY,
             "user_id" INTEGER,
             "post_id" INTEGER
