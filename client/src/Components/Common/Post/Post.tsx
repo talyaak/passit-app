@@ -10,6 +10,7 @@ import {
 import {
 	Avatar,
 	Card,
+	Link,
 	CardActions,
 	CardContent,
 	CardHeader,
@@ -20,9 +21,11 @@ import {
 	Typography,
 } from "@mui/material";
 import { IconButtonProps } from "@mui/material/IconButton";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { Link as RouteLink } from "react-router-dom";
 import { Map } from "./Map";
 import { expandedPostModel } from "../../../models/post.model";
+import { AuthContext } from "../../../App";
 
 interface ExpandMoreProps extends IconButtonProps {
 	expand: boolean;
@@ -44,22 +47,23 @@ interface postProps {
 }
 
 export const Post = (props: postProps) => {
+	const { auth } = useContext(AuthContext);
 	const [expanded, setExpanded] = useState(false);
-	const [postData, setPostData] = useState(props.postData);
+	const [postData] = useState(props.postData);
 
 	const handleExpandClick = () => {
 		setExpanded(!expanded);
 	};
 
 	return (
-		<Card sx={{ margin: 5, height: "fit-content", maxWidth: {lg: "37%"} }}>
+		<Card sx={{ margin: 5, height: "fit-content", maxWidth: { lg: "37%" } }}>
 			<CardHeader
 				avatar={
 					// USER AVATAR (Initials)
 					<Avatar sx={{ bgcolor: "blue" }} aria-label="item post">
 						{postData
 							? postData?.first_name.slice(0, 1) +
-							postData?.last_name.slice(0, 1)
+							  postData?.last_name.slice(0, 1)
 							: ""}
 					</Avatar>
 				}
@@ -112,7 +116,23 @@ export const Post = (props: postProps) => {
 			{/* MAP COMPONENT */}
 			<Collapse in={expanded} timeout="auto" unmountOnExit>
 				<CardContent style={{ textAlign: "center" }}>
-					<Map address={postData ? postData.address : undefined} />
+					{auth ? ( 
+                        // Logged in? => Show map
+						<Map address={postData ? postData.address : undefined} />
+					) : (
+						// Logged out? => refer to login
+						<>
+							<Link
+								component={RouteLink}
+								to="/login"
+								variant="body2"
+								color="inherit"
+                                sx={{textDecoration: "none"}}
+							>
+								Log-in to see item location
+							</Link>
+						</>
+					)}
 				</CardContent>
 			</Collapse>
 		</Card>

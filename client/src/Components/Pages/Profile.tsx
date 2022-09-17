@@ -43,7 +43,7 @@ export const Profile = () => {
 						<div>user id: {data["user_id"]}</div>
 					</>
 				) : (
-					<>Loading</>
+					<>Unauthorized</>
 				)
 			) : (
 				<Navigate to="/login" />

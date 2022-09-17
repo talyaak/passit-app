@@ -32,14 +32,11 @@ export const Feed = () => {
 		};
 	}, []);
 
-	// TODO: Integrate "loading" UI against actual loading time
-	setTimeout(() => {
-		setLoading(false);
-	}, 3000);
 
 	return (
 		<>
-			{!postData ? (
+			{!postData ? ( 
+                // Loading animation while data-fetching
 				<Stack spacing={1}>
 					<Skeleton variant="text" height={100} />
 					<Skeleton variant="text" height={20} />
@@ -47,20 +44,7 @@ export const Feed = () => {
 					<Skeleton variant="rectangular" height={300} />
 				</Stack>
 			) : (
-				// <Box
-				// 	display="flex"
-				// 	flexDirection="row"
-				// 	justifyContent="space-between"
-				// 	// flexGrow="1"
-				// 	// alignItems="stretch"
-				// 	// alignSelf="center"
-				// 	p={2}
-				// 	flexWrap="wrap"
-				// >
-				// 	{postData.map((post) => (
-				// 		<Post key={post.post_id} postData={post} />
-				// 	))}
-				// </Box>
+				
 				<Masonry
 					columns={{ xs: 1, lg: 2, xl: 3 }}
 					spacing={10}

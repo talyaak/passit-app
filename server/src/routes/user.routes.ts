@@ -101,13 +101,13 @@ usersRouter.post("/signup", async (req: Request, res: Response) => {
 	} 
     else { // Valid input
 		try {
-			// const result = await signUp(user);
+			const result = await signUp(user);
 			// console.log("finished signup");
-			// res.status(200).send(result);
+			res.status(200).send(result);
 		} catch (error) {
-			// console.log("signup failed");
+			console.log("signup failed");
 			// console.log(error);
-			// res.status(502).send(error);
+			res.status(502).send(error);
 		}
 	}
 });

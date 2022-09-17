@@ -6,3 +6,4 @@ server/dist/*
 
 server/key.ts
 server/.env
+client/.env
