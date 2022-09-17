@@ -4,13 +4,16 @@
 
 ## PassIt is a web app engineered with a PERN stack
 
+Link: [PassIt!](https://passit-webapp.herokuapp.com/)
+
 It's a public-use app, designed as a platform for publishing pre-owned items (clothes, household products, electronics) 
 that you want to pass forward to individuals who would benefit from it but can't afford it financially.
 
-
 ## Technologies
 
-Written with TypeScript, PassIt utilizes front-end with React and back-end with Express, PostgreSQL & NodeJS.
+Written with TypeScript, PassIt utilizes front-end with React and back-end with Express, PostgreSQL & NodeJS. 
+
+Also, the app securely stores user-sensitive data using 'bcrypt' encryption (with salt), and handles user authorization with httpOnly JWT tokens (unsusceptible to Javascript).
 
 ## Execute locally
 

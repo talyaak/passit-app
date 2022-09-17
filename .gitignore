@@ -3,7 +3,7 @@ server/node_modules
 client/src/keys.ts
 server/dist/*
 /deploy
-
+/server/build
 server/key.ts
 server/.env
 client/.env
