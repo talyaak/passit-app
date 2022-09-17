@@ -8,11 +8,11 @@ interface rBar {
 export const Rightbar = (props: rBar) => {
 	return (
 		<Box
-			bgcolor="lightcoral"
+			bgcolor="inherit"
 			flex={1}
 			p={2}
             // Below are settings for responsive breakpoints
-			sx={{ display: { xs: "none", sm: "block" } }}
+			sx={{ display: { xs: "none", md: "block" } }}
 		>
 			{props.data}
 		</Box>

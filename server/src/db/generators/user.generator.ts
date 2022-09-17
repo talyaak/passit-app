@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { userModel, addressModel } from "../../models/user.model";
 import { client } from "../db.client";
 import { generateCrypt } from "../../services/helpers/generateCrypt";
@@ -10,7 +11,7 @@ export async function generateUsers() {
 		city: "נתניה",
 		street_address: "רמז 11",
 		country: "ישראל",
-		lat: 34.8535034,
+		lat: 32.328104,
 		lng: 34.8535034,
 	};
 	const users: userModel[] = [
@@ -78,19 +79,26 @@ export async function generateUsers() {
 
 // Generate random users (API: random-data-api.com)
 export async function generateUsersFromAPI(numOfUsers: number) {
+    const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY!;
 	// let users: userModel[] = [];
 	const apiUsers = await axios.get(
 		`https://random-data-api.com/api/v2/users?size=${numOfUsers}`
 	);
 
 	for (const apiUser of apiUsers.data) {
-		const address: addressModel = {
-			city: "",
-			street_address: "",
-			country: "",
-			lat: apiUser.address.coordinates.lat,
-			lng: apiUser.address.coordinates.lng,
+
+        const address: addressModel = {
+            city: apiUser.address.city,
+			street_address: apiUser.address.street_address,
+			country: apiUser.address.country,
+			lat: 0,
+			lng: 0,
 		};
+        
+        const mapsSearch = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${apiUser.address.state} ${apiUser.address.country}&key=${GOOGLE_API_KEY}`);
+        
+        address.lat = mapsSearch.data.results[0].geometry.location.lat;
+        address.lng = mapsSearch.data.results[0].geometry.location.lng;
 
         const hashedPassword = await generateCrypt(apiUser.password);
 

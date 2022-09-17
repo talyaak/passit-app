@@ -7,17 +7,26 @@ export const Profile = () => {
 	const [data, setData] = useState<any>();
 	const { auth } = useContext(AuthContext);
 	useEffect(() => {
+        let mounted = true;
 		const fetchData = async () => {
-			const result = await axios.get<any>("/users/myposts", {
-				withCredentials: true,
-			});
-			setData(result.data.userInfo);
-			console.log(result.data);
+            try {
+                const result = await axios.get<any>("/users/myposts", {
+                    withCredentials: true,
+                });
+                if(mounted) setData(result.data.userInfo);
+                console.log(result.data);
+            } catch (error) {
+                console.log(error);
+            }
 		};
 
 		fetchData();
 
-		return () => {};
+		// Cleanup function
+		return () => {
+			const clear = async () => (mounted = false);
+			clear();
+		};
 	}, []);
 
 	return (
@@ -39,7 +48,6 @@ export const Profile = () => {
 			) : (
 				<Navigate to="/login" />
 			)}
-			
 		</>
 	);
 };

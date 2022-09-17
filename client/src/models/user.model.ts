@@ -5,17 +5,14 @@ export interface userModel {
 	last_name: String;
 	email: String;
 	password: String;
-	address?: address;
+	address?: addressModel;
 	is_admin: Boolean;
 }
 
 // user address interface
-export interface address {
+export interface addressModel {
 	city: string;
-	street_name: string;
 	street_address: string;
-	zip_code: string;
-	state: string;
 	country: string;
 	lat: number;
 	lng: number;

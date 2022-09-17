@@ -63,7 +63,7 @@ export const Navbar = () => {
 				<Stack
 					direction="row"
 					spacing={2}
-					sx={{ width: "40%", justifyContent: "space-between" }}
+					sx={{ width: "50%", justifyContent: "space-between" }}
 				>
 					<Search sx={{}}>
 						<InputBase placeholder="search..." />

@@ -28,7 +28,7 @@ function App() {
 	const [auth, setAuth] = useState<boolean | null>(null);
 
 	// on-load data fetching
-	// TODO: Implement fetching from DB via server
+	// TODO: Implement Promise.all for multiple data-fetch instances
 	useEffect(() => {
 		let mounted = true;
 		const fetchData = async () => {

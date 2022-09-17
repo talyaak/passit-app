@@ -20,8 +20,9 @@ import {
 	Typography,
 } from "@mui/material";
 import { IconButtonProps } from "@mui/material/IconButton";
-import React from "react";
+import React, { useState } from "react";
 import { Map } from "./Map";
+import { expandedPostModel } from "../../../models/post.model";
 
 interface ExpandMoreProps extends IconButtonProps {
 	expand: boolean;
@@ -38,19 +39,28 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 	}),
 }));
 
-export const Post = () => {
-	const [expanded, setExpanded] = React.useState(false);
+interface postProps {
+	postData?: expandedPostModel;
+}
+
+export const Post = (props: postProps) => {
+	const [expanded, setExpanded] = useState(false);
+	const [postData, setPostData] = useState(props.postData);
 
 	const handleExpandClick = () => {
 		setExpanded(!expanded);
 	};
 
 	return (
-		<Card sx={{ margin: 5 }}>
+		<Card sx={{ margin: 5, height: "fit-content", maxWidth: {lg: "37%"} }}>
 			<CardHeader
 				avatar={
+					// USER AVATAR (Initials)
 					<Avatar sx={{ bgcolor: "blue" }} aria-label="item post">
-						R
+						{postData
+							? postData?.first_name.slice(0, 1) +
+							postData?.last_name.slice(0, 1)
+							: ""}
 					</Avatar>
 				}
 				action={
@@ -58,23 +68,26 @@ export const Post = () => {
 						<MoreVert />
 					</IconButton>
 				}
-				title="John Doe"
+				// USER NAME
+				title={postData ? postData.first_name + " " + postData.last_name : ""}
 				subheader="September 14, 2022"
 			/>
+			{/* IMAGE URL */}
 			<CardMedia
 				component="img"
-				height="20%"
-				image="https://cdn-images.article.com/products/SKU25A/2890x1500/image74669.jpg"
+				height="auto"
+				// sx={{ maxHeight: "10%", maxWidth: }}
+				image={postData ? postData.img_url : ""}
 				alt="Second-hand sofa"
 			/>
 			<CardContent>
+				{/* POST DESCRIPTION */}
 				<Typography variant="body2" color="text.secondary">
-					A great second-hand sofa that I want to give away for free. Contact me
-					via phone message only! Would gladly hand it out for lone-soldiers or
-					someone in need of it.
+					{postData ? postData.description : " "}
 				</Typography>
 			</CardContent>
 			<CardActions disableSpacing>
+				{/* TODO: Implement like button */}
 				<IconButton aria-label="add to favorites">
 					<Checkbox
 						icon={<FavoriteBorder />}
@@ -96,9 +109,10 @@ export const Post = () => {
 					<ExpandMoreIcon />
 				</ExpandMore>
 			</CardActions>
+			{/* MAP COMPONENT */}
 			<Collapse in={expanded} timeout="auto" unmountOnExit>
-				<CardContent style={{textAlign: "center"}}>
-					<Map />
+				<CardContent style={{ textAlign: "center" }}>
+					<Map address={postData ? postData.address : undefined} />
 				</CardContent>
 			</Collapse>
 		</Card>

@@ -1,19 +1,45 @@
 import { Box, Stack, Skeleton } from "@mui/material";
-import { useState } from "react";
+import Masonry from "@mui/lab/Masonry";
+import { useState, useEffect } from "react";
 import { Post } from "../Common/Post";
+import axios from "axios";
+import { expandedPostModel } from "../../models/post.model";
 
 export const Feed = () => {
 	const [loading, setLoading] = useState(true);
+	const [postData, setPostData] = useState<expandedPostModel[]>();
 
-    // TODO: Implement data fetching from DB via server
-    // TODO: Integrate "loading" UI whilst data fetching
+	useEffect(() => {
+		let mounted = true;
+		const fetchData = async () => {
+			try {
+				const result = await axios.get<expandedPostModel[]>(
+					"/api/expanded-posts"
+				);
+				if (mounted) setPostData(result.data);
+				console.log(result.data);
+			} catch (error) {
+				console.log(error);
+			}
+		};
+
+		fetchData();
+
+		// Cleanup function
+		return () => {
+			const clear = async () => (mounted = false);
+			clear();
+		};
+	}, []);
+
+	// TODO: Integrate "loading" UI against actual loading time
 	setTimeout(() => {
 		setLoading(false);
 	}, 3000);
 
 	return (
 		<>
-			{loading ? (
+			{!postData ? (
 				<Stack spacing={1}>
 					<Skeleton variant="text" height={100} />
 					<Skeleton variant="text" height={20} />
@@ -21,14 +47,29 @@ export const Feed = () => {
 					<Skeleton variant="rectangular" height={300} />
 				</Stack>
 			) : (
-				<Box p={2}>
-					<Post />
-					<Post />
-					<Post />
-					<Post />
-					<Post />
-					<Post />
-				</Box>
+				// <Box
+				// 	display="flex"
+				// 	flexDirection="row"
+				// 	justifyContent="space-between"
+				// 	// flexGrow="1"
+				// 	// alignItems="stretch"
+				// 	// alignSelf="center"
+				// 	p={2}
+				// 	flexWrap="wrap"
+				// >
+				// 	{postData.map((post) => (
+				// 		<Post key={post.post_id} postData={post} />
+				// 	))}
+				// </Box>
+				<Masonry
+					columns={{ xs: 1, lg: 2, xl: 3 }}
+					spacing={10}
+					sx={{ marginLeft: {xs: "-8px", sm: "0"}, margin: "5px" }}
+				>
+					{postData.map((post) => (
+						<Post key={post.post_id} postData={post} />
+					))}
+				</Masonry>
 			)}
 		</>
 	);
