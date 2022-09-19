@@ -41,3 +41,27 @@ export const getExpandedPosts = async (): Promise<postModel[] | void> =>
 			}
 		);
 	});
+
+export const getMyPosts = async (userId: number): Promise<postModel[] | void> =>
+	new Promise<postModel[]>((resolve, reject) => {
+		const query = 
+        {
+            text: `SELECT posts.post_id, users.user_id,
+            users.first_name, users.last_name, users.email, users.email, 
+            posts.category, posts.product_name, posts.description, posts.img_url, users.address
+            FROM users
+            INNER JOIN posts on
+            users.user_id = posts.user_id
+            WHERE users.user_id = $1;`,
+            values: [userId]
+        }
+                
+
+		client.query(
+			query,
+			async (error: Error, result: QueryResult<postModel>) => {
+				if (error) reject(error);
+				else resolve(result.rows);
+			}
+		);
+	});

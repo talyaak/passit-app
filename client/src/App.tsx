@@ -6,6 +6,7 @@ import { Profile } from "./Components/Pages/Profile";
 import "./App.scss";
 import { Home } from "./Components/Home";
 import { Login, SignUp } from "./Components/Pages";
+import { Posts } from "./Components/Pages/Posts";
 
 interface AuthInterface { 
     auth: boolean | null 
@@ -65,7 +66,7 @@ function App() {
 						<Route path="signup" element={<SignUp />} />
 
 						{/* TODO: Implement 'My Posts' component */}
-						<Route path="profile/posts" element={<Feed />} />
+						<Route path="profile/posts" element={<Posts />} />
 
 						{/* TODO: Implement 'Liked' component */}
 						<Route path="profile/liked" element={<Feed />} />

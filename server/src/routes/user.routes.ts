@@ -9,11 +9,23 @@ import { authenticateToken } from "../middleware/authenticateToken";
 import { getErrorMessage } from "../services/helpers/getErrorMessage";
 import { resolve } from "path";
 
+export interface userInfo {
+	user_id: number;
+	first_name: string;
+	last_name: string;
+	email: string;
+	address: any;
+	password: string;
+	is_admin: boolean;
+	iat: number;
+	exp: number;
+}
+
 // Global Express.Request declaration for middleware use
 declare global {
 	namespace Express {
 		interface Request {
-			payload: string | jwt.JwtPayload;
+			payload: string | jwt.JwtPayload | userInfo;
 		}
 	}
 }
@@ -45,7 +57,7 @@ usersRouter.get(
 	}
 );
 
-// Get user (by user_id) posts
+// Get user (by user_id)
 usersRouter.get("/:id", async (req: Request, res: Response) => {
 	const userId = req.params.id;
 
@@ -87,19 +99,23 @@ usersRouter.post("/signup", async (req: Request, res: Response) => {
 	function isEmpty(array: String[]) {
 		for (const str of array) {
 			console.log(str);
-            if (str == '') return true;
+			if (str == "") return true;
 		}
 		return false;
 	}
-    const test = isEmpty([user.first_name, user.last_name, user.email, user.password]);
-    console.log(test);
-    
-    // Invalid input
+	const test = isEmpty([
+		user.first_name,
+		user.last_name,
+		user.email,
+		user.password,
+	]);
+	console.log(test);
+
+	// Invalid input
 	if (test) {
-		
-        res.status(400).json({ message: "Invalid input, try again"});
-	} 
-    else { // Valid input
+		res.status(400).json({ message: "Invalid input, try again" });
+	} else {
+		// Valid input
 		try {
 			const result = await signUp(user);
 			// console.log("finished signup");

@@ -35,8 +35,8 @@ export const Sidebar = () => {
 					{/* 'Liked' button*/}
                     <CustomSideButton component={<ThumbUpAlt />} link="/profile/liked" primary="Liked"/>
 
-					{/* 'Setting' button */}
-					<CustomSideButton component={<Settings />} link="/settings" primary="Settings"/>
+					{/* 'Setting' button
+					<CustomSideButton component={<Settings />} link="/settings" primary="Settings"/> */}
 
 					{/* 'Profile' button */}
                     <CustomSideButton component={<AccountCircleRounded />} link="/profile" primary="Profile"/>
