@@ -21,11 +21,12 @@ import {
 	Typography,
 } from "@mui/material";
 import { IconButtonProps } from "@mui/material/IconButton";
-import React, { useState, useContext } from "react";
+import React, { useState, FormEvent, useEffect } from "react";
 import { Link as RouteLink } from "react-router-dom";
 import { Map } from "./Map";
 import { expandedPostModel } from "../../../models/post.model";
-import { AuthContext } from "../../../App";
+import axios from "axios";
+import { ProtectedComponent } from "../ProtectedComponent";
 
 interface ExpandMoreProps extends IconButtonProps {
 	expand: boolean;
@@ -47,13 +48,23 @@ interface postProps {
 }
 
 export const Post = (props: postProps) => {
-	const { auth } = useContext(AuthContext);
 	const [expanded, setExpanded] = useState(false);
 	const [postData] = useState(props.postData);
+	const [liked, setLiked] = useState(false);
 
 	const handleExpandClick = () => {
 		setExpanded(!expanded);
 	};
+
+	const handleLike = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setLiked(!liked);
+	};
+
+	useEffect(() => {
+		// Log liked state
+		console.log(liked);
+		return () => {};
+	}, [liked]);
 
 	return (
 		<Card sx={{ margin: 5, height: "fit-content", maxWidth: { lg: "37%" } }}>
@@ -92,12 +103,18 @@ export const Post = (props: postProps) => {
 			</CardContent>
 			<CardActions disableSpacing>
 				{/* TODO: Implement like button */}
-				<IconButton aria-label="add to favorites">
-					<Checkbox
-						icon={<FavoriteBorder />}
-						checkedIcon={<Favorite sx={{ color: "red" }} />}
-					/>
-				</IconButton>
+				{/* <IconButton
+					aria-label="add to favorites"
+					
+				> */}
+				<Checkbox
+					checked={liked}
+					onChange={handleLike}
+					inputProps={{ "aria-label": "controlled" }}
+					icon={<FavoriteBorder />}
+					checkedIcon={<Favorite sx={{ color: "red" }} />}
+				/>
+				{/* </IconButton> */}
 				<IconButton aria-label="share">
 					<Share />
 				</IconButton>
@@ -116,23 +133,24 @@ export const Post = (props: postProps) => {
 			{/* MAP COMPONENT */}
 			<Collapse in={expanded} timeout="auto" unmountOnExit>
 				<CardContent style={{ textAlign: "center" }}>
-					{auth ? ( 
-                        // Logged in? => Show map
-						<Map address={postData ? postData.address : undefined} />
-					) : (
+					<ProtectedComponent
+						// Logged in? => Show map
+						authComponent={
+							<Map address={postData ? postData.address : undefined} />
+						}
 						// Logged out? => refer to login
-						<>
+						default={
 							<Link
 								component={RouteLink}
 								to="/login"
 								variant="body2"
 								color="inherit"
-                                sx={{textDecoration: "none"}}
+								sx={{ textDecoration: "none" }}
 							>
 								Log-in to see item location
 							</Link>
-						</>
-					)}
+						}
+					/>
 				</CardContent>
 			</Collapse>
 		</Card>

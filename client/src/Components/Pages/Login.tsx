@@ -20,6 +20,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { AuthContext } from "../../App";
 import axios from "axios";
+import { ProtectedComponent } from "../Common/ProtectedComponent";
 
 export function Login() {
 	const theme = createTheme();
@@ -51,8 +52,10 @@ export function Login() {
 
 	return (
 		<>
-			{(!auth) ? (
-				<ThemeProvider theme={theme}>
+            <ProtectedComponent 
+            authComponent={<Navigate replace to="/profile" />}
+            default={
+                <ThemeProvider theme={theme}>
 					<Container component="main" maxWidth="xs">
 						<CssBaseline />
 						<Box
@@ -143,9 +146,9 @@ export function Login() {
 						</Box>
 					</Container>
 				</ThemeProvider>
-			) : (
-				<Navigate replace to="/profile" />
-			)}
+            }
+            />
+			
 		</>
 	);
 }

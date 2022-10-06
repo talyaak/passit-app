@@ -1,18 +1,20 @@
 import { useState, useEffect } from "react";
 import { addressModel } from "../../../models/user.model";
 
-const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY!;
+// import { GOOGLE_API_KEY } from '../../../keys';
+const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY!;
 
 interface mapProps {
 	address?: addressModel;
 }
 
 export const Map = (props: mapProps) => {
-	const [address, setAddress] = useState<addressModel | undefined>(
+    const [address, setAddress] = useState<addressModel | undefined>(
 		props.address
 	);
 
 	useEffect(() => {
+
 		setAddress(props.address);
 		return () => {};
 	}, [props.address]);

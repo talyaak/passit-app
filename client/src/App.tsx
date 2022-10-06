@@ -1,12 +1,11 @@
 import axios from "axios";
+import "./App.scss";
 import { useState, useEffect, createContext, Context } from "react";
 import { Route, Routes } from "react-router-dom";
-import { Feed } from "./Components/Pages/Feed";
-import { Profile } from "./Components/Pages/Profile";
-import "./App.scss";
 import { Home } from "./Components/Home";
-import { Login, SignUp } from "./Components/Pages";
-import { Posts } from "./Components/Pages/Posts";
+import { Feed, Login, SignUp, LikedPosts, MyPosts, Profile } from "./Components/Pages";
+
+
 
 interface AuthInterface { 
     auth: boolean | null 
@@ -65,13 +64,10 @@ function App() {
 
 						<Route path="signup" element={<SignUp />} />
 
-						{/* TODO: Implement 'My Posts' component */}
-						<Route path="profile/posts" element={<Posts />} />
+						<Route path="profile/posts" element={<MyPosts />} />
 
-						{/* TODO: Implement 'Liked' component */}
-						<Route path="profile/liked" element={<Feed />} />
+						<Route path="profile/liked" element={<LikedPosts />} />
 
-						{/* TODO: Implement 'Profile' component */}
 						<Route path="profile" element={<Profile />} />
 
 						{/* TODO: Implement 'Settings' component */}
