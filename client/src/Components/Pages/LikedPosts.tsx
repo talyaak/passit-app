@@ -1,10 +1,5 @@
-import { UserSpecificPosts } from "../Common/UserSpecificPosts";
+import { ProtectedPosts } from "../Common/ProtectedPosts";
 
 export const LikedPosts = () => {
-	
-	return (
-		<>
-            <UserSpecificPosts endpoint={"/api/likedposts"} />
-		</>
-	);
+	return <ProtectedPosts endpoint={"/api/likedposts"} />;
 };

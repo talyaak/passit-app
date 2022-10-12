@@ -7,28 +7,6 @@ import { userModel } from "../models/user.model";
 import jwt from "jsonwebtoken";
 import { authenticateToken } from "../middleware/authenticateToken";
 import { getErrorMessage } from "../services/helpers/getErrorMessage";
-import { resolve } from "path";
-
-export interface userInfo {
-	user_id: number;
-	first_name: string;
-	last_name: string;
-	email: string;
-	address: any;
-	password: string;
-	is_admin: boolean;
-	iat: number;
-	exp: number;
-}
-
-// Global Express.Request declaration for middleware use
-declare global {
-	namespace Express {
-		interface Request {
-			payload: string | jwt.JwtPayload | userInfo;
-		}
-	}
-}
 
 const usersRouter = express.Router();
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET!;
@@ -43,17 +21,11 @@ usersRouter.get("/", async (req: Request, res: Response) => {
 });
 
 // Get hardcoded user posts (uses jwt authentication middleware)
-usersRouter.get(
-	"/myposts",
+usersRouter.post(
+	"/credentials",
 	authenticateToken,
 	(req: Request, res: Response) => {
-		res.json({
-			posts: [
-				"Hey, this is my item for free",
-				"Hey, looking to give away a couch",
-			],
-			userInfo: req.payload,
-		});
+		res.json(req.payload);
 	}
 );
 

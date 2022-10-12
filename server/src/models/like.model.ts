@@ -3,3 +3,7 @@ export interface likeModel {
     user_id: number,
     post_id: number
 }
+
+export interface likedIDsQueryResult {
+    liked_ids: number[]
+}

@@ -8,17 +8,15 @@ interface HomeProps {
 
 export const Home = (props: HomeProps) => {
 	return (
-		<>
-			<Box>
-				<Navbar />
-				<Stack direction="row" spacing={2} justifyContent="space-between">
-					<Sidebar />
-					<Box flex={4} p={{ xs: 0, md: 2 }} textAlign="center">
-						<Outlet />
-					</Box>
-					<Rightbar data={props.data} />
-				</Stack>
-			</Box>
-		</>
+		<Box>
+			<Navbar />
+			<Stack direction="row" spacing={2} justifyContent="space-between">
+				<Sidebar />
+				<Box flex={4} p={{ xs: 0, md: 2 }} textAlign="center">
+					<Outlet />
+				</Box>
+				<Rightbar data={props.data} />
+			</Stack>
+		</Box>
 	);
 };

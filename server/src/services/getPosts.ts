@@ -1,6 +1,7 @@
 import { QueryResult } from "pg";
 import { postModel, expandedPostModel } from "../models/post.model";
 import { client } from "../db/db.client";
+import { likedIDsQueryResult } from "../models/like.model";
 
 /**
  *
@@ -44,7 +45,7 @@ export const getExpandedPosts = async (): Promise<expandedPostModel[] | void> =>
 
 export const getMyPosts = async (
 	userId: number
-): Promise<expandedPostModel[] | void> =>
+): Promise<expandedPostModel[]> =>
 	new Promise<expandedPostModel[]>((resolve, reject) => {
 		const query = {
 			text: `SELECT posts.post_id, users.user_id,
@@ -85,6 +86,24 @@ export const getLikedPosts = async (
 		client.query(
 			query,
 			async (error: Error, result: QueryResult<expandedPostModel>) => {
+				if (error) reject(error);
+				else resolve(result.rows);
+			}
+		);
+	});
+
+export const getLikedPostsIDs = async (
+	userId: number
+): Promise<likedIDsQueryResult[]> =>
+	new Promise<likedIDsQueryResult[]>((resolve, reject) => {
+		const query = {
+			text: `SELECT ARRAY_AGG(post_id) AS liked_ids FROM likes WHERE user_id = $1;`,
+			values: [userId],
+		};
+
+		client.query(
+			query,
+			async (error: Error, result: QueryResult<likedIDsQueryResult>) => {
 				if (error) reject(error);
 				else resolve(result.rows);
 			}

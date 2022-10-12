@@ -25,8 +25,9 @@ import React, { useState, FormEvent, useEffect } from "react";
 import { Link as RouteLink } from "react-router-dom";
 import { Map } from "./Map";
 import { expandedPostModel } from "../../../models/post.model";
-import axios from "axios";
 import { ProtectedComponent } from "../ProtectedComponent";
+import { userInfo } from "../../../models/user.model";
+import axios from "axios";
 
 interface ExpandMoreProps extends IconButtonProps {
 	expand: boolean;
@@ -45,18 +46,37 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 
 interface postProps {
 	postData?: expandedPostModel;
+	auth?: boolean | null;
+	liked?: boolean;
+	userInfo?: userInfo | null;
 }
 
 export const Post = (props: postProps) => {
 	const [expanded, setExpanded] = useState(false);
 	const [postData] = useState(props.postData);
-	const [liked, setLiked] = useState(false);
+	const [liked, setLiked] = useState(props.liked);
 
 	const handleExpandClick = () => {
 		setExpanded(!expanded);
 	};
 
-	const handleLike = (event: React.ChangeEvent<HTMLInputElement>) => {
+	// Handle 'Like' event vs DB & React state
+	const handleLike = async (event: React.ChangeEvent<HTMLInputElement>) => {
+		if (!props.auth) {
+			alert("Log in or sign up to like posts")
+            return;
+		}
+
+		let likeEndpoint = "/api/like";
+		if (liked) likeEndpoint = "/api/unlike";
+
+		console.log(
+			`Like endpoint: ${likeEndpoint}\nPost ID: ${postData?.post_id}\nUser ID: ${props.userInfo?.user_id}`
+		);
+
+		await axios.post(likeEndpoint, {
+			post_id: postData?.post_id,
+		});
 		setLiked(!liked);
 	};
 

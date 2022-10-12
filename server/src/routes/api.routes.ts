@@ -1,9 +1,10 @@
 import "dotenv/config";
-import { userInfo } from "./user.routes";
+import { userInfo } from "../config/server.config";
 import express, { Response, Request } from "express";
 import { authenticateToken } from "../middleware/authenticateToken";
-import { getPosts, getExpandedPosts, getMyPosts, getLikedPosts } from "../services/getPosts";
+import { getPosts, getExpandedPosts, getMyPosts, getLikedPosts, getLikedPostsIDs } from "../services/getPosts";
 import { likePost, unlikePost, checkLike } from "../services/likePosts";
+import { likedIDsQueryResult } from "../models/like.model";
 
 const apiRouter = express.Router();
 
@@ -45,34 +46,48 @@ apiRouter.get("/likedposts", authenticateToken, async (req: Request, res: Respon
 	);  
 });
 
+// Check for like instance between user and post (via id)
 apiRouter.get("/fetch/like", authenticateToken, async (req: Request, res: Response) => {
     const payload = req.payload as userInfo;
     const postID = req.body.post_id;
     const userID = payload.user_id;
 
-    await checkLike(userID, postID).then(
+    checkLike(userID, postID).then(
         (result: boolean) => res.status(200).json(result),
         (error: Error ) => res.status(502).send(error)
     )
 })
 
+// Get liked post array
+apiRouter.get("/fetch/likes", authenticateToken, async (req: Request, res: Response) => {
+    const payload = req.payload as userInfo;
+    const userID = payload.user_id;
+
+    getLikedPostsIDs(userID).then(
+        (result: likedIDsQueryResult[]) => res.status(200).json(result[0].liked_ids),
+        (error: Error ) => res.status(502).send(error)
+    )
+})
+
+// Like a post
 apiRouter.post("/like", authenticateToken, async (req: Request, res: Response) => {
     const payload = req.payload as userInfo;
     const postID = req.body.post_id;
     const userID = payload.user_id;
 
-    await likePost(userID, postID).then(
+    likePost(userID, postID).then(
         (result: any) => res.status(200).json(result),
         (error: Error) => res.status(502).send(error)
     )
 })
 
+// Unlike a post
 apiRouter.post("/unlike", authenticateToken, async (req: Request, res: Response) => {
     const payload = req.payload as userInfo;
     const postID = req.body.post_id;
     const userID = payload.user_id;
 
-    await unlikePost(userID, postID).then(
+    unlikePost(userID, postID).then(
         (result: any) => res.status(200).json(result),
         (error: Error) => res.status(502).send(error)
     )

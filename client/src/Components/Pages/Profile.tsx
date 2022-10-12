@@ -9,7 +9,7 @@ export const Profile = () => {
 		let mounted = true;
 		const fetchData = async () => {
 			try {
-				const result = await axios.get<any>("/users/myposts", {
+				const result = await axios.get<any>("/users/credentials", {
 					withCredentials: true,
 				});
 				if (mounted) setData(result.data.userInfo);

@@ -17,3 +17,16 @@ export interface addressModel {
 	lat: number;
 	lng: number;
 }
+
+// For use with server-side jwt payload responses
+export interface userInfo {
+	user_id: number;
+	first_name: string;
+	last_name: string;
+	email: string;
+	address: any;
+	password: string;
+	is_admin: boolean;
+	iat: number;
+	exp: number;
+}
